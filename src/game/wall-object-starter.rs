@@ -1,43 +1,46 @@
+pub trait Drawable {
+    fn draw(&mut self, draw: &mut Draw, position: (f32, f32));
+}
+
 struct Wall {
-    x: f32,
-    y: f32,
-
-    width: f32,
-    height: f32,
-
+    position: (f32, f32),
+    size: (f32, f32),
     color: Color,
 }
 
 impl Wall {
     pub fn new() -> Self {
         Self {
-            x: 0.0,
-            y: 0.0,
-
-            width: 0.0,
-            height: 0.0,
-
-            color: Color::BLUE,
+            position: (0.0, 0.0),
+            size: (32.0, 32.0),
+            color: Color::WHITE,
         }
     }
 
-    pub fn with_values(x: f32, y: f32, width: f32, height: f32, color: Color) -> Self {
+    pub fn from_values(position: (f32, f32), size: (f32, f32), color: Color) -> Self {
         Self {
-            x,
-            y,
-
-            width,
-            height,
-
+            position,
+            size,
             color,
         }
     }
 
-    pub fn x(&mut self) -> f32 { self.x }
-    pub fn y(&mut self) -> f32 { self.y }
+    pub fn position(&mut self) -> &mut (f32, f32) {
+        &mut self.position
+    }
+    pub fn size(&mut self) -> &mut (f32, f32) {
+        &mut self.size
+    }
+    pub fn color(&mut self) -> &mut Color {
+        &mut self.color
+    }
+}
 
-    pub fn width(&mut self) -> f32 { self.width }
-    pub fn height(&mut self) -> f32 { self.height }
+impl Drawable for Wall {
+    fn draw(&mut self, draw: &mut Draw, position: (f32, f32)) {
+        self.position.0 += position.0;
+        self.position.1 += position.1;
 
-    pub fn color(&mut self) -> Color { self.color }
+        draw.rect(self.position, self.size).fill_color(self.color);
+    }
 }

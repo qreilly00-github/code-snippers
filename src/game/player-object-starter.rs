@@ -1,3 +1,7 @@
+pub trait Drawable {
+    fn draw(&mut self, draw: &mut Draw, position: (f32, f32));
+}
+
 struct Player {
     x: f32,
     y: f32,

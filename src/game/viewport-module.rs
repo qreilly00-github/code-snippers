@@ -1,56 +1,53 @@
-struct Viewport {
-    x: f32,
-    y: f32,
+pub trait Drawable {
+    fn draw(&mut self, draw: &mut Draw, position: (f32, f32));
+}
 
-    width: f32,
-    height: f32,
+struct Viewport {
+    position: (f32, f32),
+    size: (f32, f32),
+
+    window_size: (i32, i32),
 }
 
 impl Viewport {
     pub fn new() -> Self {
         Self {
-            x: 0.0,
-            y: 0.0,
+            position: (0.0, 0.0),
+            size: (1.0, 1.0),
 
-            width: 0.0,
-            height: 0.0,
+            window_size: (1280, 720),
         }
     }
 
-    pub fn with_values(x: f32, y: f32, width: f32, height: f32) -> Self {
+    pub fn from_values(
+        position: (f32, f32),
+        size: (f32, f32),
+        window_size: (i32, i32),
+        color: Color,
+    ) -> Self {
         Self {
-            x,
-            y,
+            position,
+            size,
 
-            width,
-            height,
+            window_size,
         }
     }
 
     pub fn set(&self, draw: &mut Draw) {
-        draw.set_size(WINDOW_WIDTH * self.width, WINDOW_HEIGHT * self.height)
+        draw.set_size(
+            self.window_size.0 as f32 * self.size.0,
+            self.window_size.1 as f32 * self.size.1,
+        )
     }
 
-    pub fn draw(&self, draw: &mut Draw, objects: &Vec<Box <dyn Drawable>>) {
-        let player = *&objects[0].downcast::<Player>();
-        let offset = (self.width * (WINDOW_WIDTH / 2.0), self.height * (WINDOW_HEIGHT / 2.0));
-
-        objects[0].draw(draw, offset.0, offset.1);
-
-        if objects.len() > 1 {
-
-
-            for object in objects.iter().skip(1) {
-                object.draw(draw, offset.0 - player.x(), offset.1 - player.y());
-            }
-        }
-
-
+    pub fn position(&mut self) -> &mut (f32, f32) {
+        &mut self.position
+    }
+    pub fn size(&mut self) -> &mut (f32, f32) {
+        &mut self.size
     }
 
-    pub fn x(&mut self) -> f32 { self.x }
-    pub fn y(&mut self) -> f32 { self.y }
-
-    pub fn width(&mut self) -> f32 { self.width }
-    pub fn height(&mut self) -> f32 { self.height }
+    pub fn window_size(&mut self) -> &mut (i32, i32) {
+        &mut self.window_size
+    }
 }
